@@ -3,7 +3,7 @@
 ## Repurposing a landline telephone into a jukebox with Raspberry Pi Pico and an Mp3 player.
 
 ![Jukephone](images/Jukephone_01.jpg)
-See it in action: [YouTube video](https://xxx)
+See it in action: [YouTube video](https://www.youtube.com/watch?v=nJ-X3f9ios0)
 
 ### How it works
 
