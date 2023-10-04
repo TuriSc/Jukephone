@@ -1,0 +1,15 @@
+[submodule "lib/RP2040-DFPlayer"]
+	path = lib/RP2040-DFPlayer
+	url = https://github.com/TuriSc/RP2040-DFPlayer
+[submodule "lib/RP2040-Button"]
+	path = lib/RP2040-Button
+	url = https://github.com/TuriSc/RP2040-Button
+[submodule "lib/RP2040-PWM-Tone"]
+	path = lib/RP2040-PWM-Tone
+	url = https://github.com/TuriSc/RP2040-PWM-Tone
+[submodule "lib/RP2040-Battery-Check"]
+	path = lib/RP2040-Battery-Check
+	url = https://github.com/TuriSc/RP2040-Battery-Check
+[submodule "lib/RP2040-Keypad-Matrix"]
+	path = lib/RP2040-Keypad-Matrix
+	url = https://github.com/TuriSc/RP2040-Keypad-Matrix
