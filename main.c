@@ -1,7 +1,7 @@
 /* Jukephone
  * Repurposing a landline telephone into a jukebox with Raspberry Pi Pico and an MP3 player.
  * By Turi Scandurra – https://turiscandurra.com/circuits
- * v1.0.0 - 2023.10.04
+ * 2023.10.23 - v1.0.1
  */
 
 #include <stdio.h>
@@ -455,7 +455,7 @@ int main(){
     
     // Accepted volume values are 1 to 30.
     // Be careful, as it can get dangerously loud for a headset.
-    dfplayer_set_volume(&dfplayer, 3);
+    dfplayer_set_volume(&dfplayer, 1);
 
     blink(BLINK_DURATION_MS); // Feedback blink
     

@@ -80,5 +80,5 @@ After that, simply connect your Pico to your computer via USB holding the BOOTSE
 Jukebox is an original project. More info and pictures on my blog: [turiscandurra.com/circuits](https://turiscandurra.com/circuits)
 
 ### Version history
-
+- 2023.10.23 - v1.0.1 - Lowered default volume to the absolute minimum
 - 2023-10-04 - v1.0.0 - First release
