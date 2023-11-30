@@ -307,40 +307,40 @@ void key_pressed(uint8_t key){
             type_track_id(3);
             tone(&generator, NOTE_D4, BEEP_DURATION_MS);
             break;
-        case 4:
+        case 5:
             type_track_id(4);
             tone(&generator, NOTE_DS4, BEEP_DURATION_MS);
             break;
-        case 5:
+        case 6:
             type_track_id(5);
             tone(&generator, NOTE_E4, BEEP_DURATION_MS);
             break;
-        case 6:
+        case 7:
             type_track_id(6);
             tone(&generator, NOTE_F4, BEEP_DURATION_MS);
             break;
-        case 8:
+        case 10:
             type_track_id(7);
             tone(&generator, NOTE_FS4, BEEP_DURATION_MS);
             break;
-        case 9:
+        case 11:
             type_track_id(8);
             tone(&generator, NOTE_G4, BEEP_DURATION_MS);
             break;
-        case 10:
+        case 12:
             type_track_id(9);
             tone(&generator, NOTE_GS4, BEEP_DURATION_MS);
             break;
-        case 13:
+        case 15:
             type_track_id(0);
             tone(&generator, NOTE_AS4, BEEP_DURATION_MS);
             break;
         // Prev / Next (asterisk and little gate sign keys)
-        case 12:
+        case 16:
             prev_track();
             tone(&generator, NOTE_A4, BEEP_DURATION_MS);
             break;
-        case 14:
+        case 17:
             next_track();
             tone(&generator, NOTE_B4, BEEP_DURATION_MS);
             break;
@@ -348,13 +348,13 @@ void key_pressed(uint8_t key){
         case 3:
             random_track();
             break;
-        case 16:
+        case 19:
             #if DEBUG
             printf("vol-\n");
             #endif
             player_request(VOLUMEDOWN);
             break;
-        case 11:
+        case 13:
             #if DEBUG
             printf("vol+\n");
             #endif
@@ -363,10 +363,10 @@ void key_pressed(uint8_t key){
         // Note: on the specific telephone I used, the bottom left key (mute)
         // is not part of the keypad matrix and is connected to its own pin.
         // See button_onchange() below.
-        case 7:
+        case 8:
             toggle_repeat();
             break;
-        case 15:
+        case 18:
             toggle_pause();
             break;
     }
