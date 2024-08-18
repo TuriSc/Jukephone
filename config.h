@@ -3,7 +3,7 @@
 
 /* Device identifiers */
 #define PROGRAM_NAME            "Jukephone"
-#define PROGRAM_VERSION         "1.0.0"
+#define PROGRAM_VERSION         "1.0.1"
 #define PROGRAM_DESCRIPTION     "Repurposing a landline telephone into a jukebox"
 #define PROGRAM_URL             "https://turiscandurra.com/circuits"
 

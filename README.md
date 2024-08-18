@@ -61,6 +61,10 @@ A typical setup would have the player read Mp3 files off a microSD card (formatt
     - 0003.mp3
 ```
 
+### Installation
+Pre-compiled builds for Raspberry Pi Pico (RP2040) and Raspberry Pi Pico 2 (RP2350) are provided in [/dist](dist).
+Assuming you didn't make any changes to the circuit, you can simply flash the correct firmware. If you need to change your configuration, you'll have to build the project from these sources.
+
 ### Compiling
 
 Required: make sure the [Pico SDK](https://github.com/raspberrypi/pico-sdk) is installed and accessible.
