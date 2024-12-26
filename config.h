@@ -1,16 +1,22 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
-/* Device identifiers */
+/**
+ * Device Identifiers
+ */
 #define PROGRAM_NAME            "Jukephone"
 #define PROGRAM_VERSION         "1.0.1"
 #define PROGRAM_DESCRIPTION     "Repurposing a landline telephone into a jukebox"
 #define PROGRAM_URL             "https://turiscandurra.com/circuits"
 
-/* Macros */
-#define NUM_TRACKS 999
+/**
+ * Macros
+ */
+#define NUM_TRACKS              999
 
-/* GPIO definitions */
+/**
+ * GPIO definitions
+ */
 #define KEYPAD_COLS             {8, 4, 2, 1, 0} // Keypad matrix column GPIOs
 #define KEYPAD_ROWS             {7, 6, 5, 3}    // Keypad matrix row GPIOs
 
@@ -23,8 +29,8 @@
 #define BUZZER_PIN              14
 #define BUZZER_PIN_DESCRIPTION  "Buzzer"
 
-#define GPIO_TX                 20
-#define GPIO_RX                 21
+#define GPIO_TX                 20 // UART TX pin
+#define GPIO_RX                 21 // UART RX pin
 #define DFPLAYER_UART           uart1
 
 #define BUSY_PIN                22  // Implemented but not used
@@ -33,7 +39,9 @@
 #define POWER_ON_LED_PIN        PICO_DEFAULT_LED_PIN
 #define POWER_ON_LED_PIN_DESCRIPTION        "Power-on LED"
 
-/* Timers and delays */
+/**
+ * Timers and delays
+ */
 #define BLINK_DURATION_MS       100
 #define BEEP_DURATION_MS        50
 #define PLAYER_POLL_MS          350     // Should be > 200ms
@@ -41,7 +49,9 @@
 #define INPUT_TIMEOUT_MS        1000    // After this interval, any unsubmitted input
                                         // will be discarded
 
-/* Definitions */
+/**
+ * Definitions
+ */
 #define PAUSED_OR_IDLE          0
 #define PLAYING                 1
 
@@ -53,10 +63,14 @@
 #define PAUSE                   5
 #define RESUME                  6
 
-/* Debugging */
+/**
+ * Debugging
+ */
 #define DEBUG                   1
 
-/* Melodies for the buzzer */
+/**
+ * Melodies for the buzzer
+ */
 struct note_t POSITIVE[] = {
     {NOTE_C4, 16},
     {NOTE_AS4, 16},

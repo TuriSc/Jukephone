@@ -1,7 +1,10 @@
-/* Jukephone
- * Repurposing a landline telephone into a jukebox with Raspberry Pi Pico and an MP3 player.
- * By Turi Scandurra – https://turiscandurra.com/circuits
- * 2023.10.23 - v1.0.1
+/**
+ * @file main.c
+ * @projectname Jukephone
+ * @brief Repurposing a landline telephone into a jukebox with Raspberry Pi Pico and an MP3 player.
+ * @author Turi Scandurra
+ * @date 2023.10.23
+ * @version 1.0.1
  */
 
 #include <stdio.h>
@@ -24,6 +27,9 @@
 #include "pico/binary_info.h"
 #endif
 
+/**
+ * @brief Alarm IDs for various events
+ */
 static alarm_id_t power_on_alarm;
 static alarm_id_t blink_alarm;
 static alarm_id_t type_timeout_alarm;
@@ -32,41 +38,112 @@ static alarm_id_t loading_track_alarm;
 static repeating_timer_t status_timer;
 static repeating_timer_t low_batt_pulse_timer;
 
+/**
+ * @brief Current state of the player
+ */
 uint8_t status = PAUSED_OR_IDLE;
+
+/**
+ * @brief Flag to indicate if the player is paused
+ */
 bool is_paused = false;
+
+/**
+ * @brief Flag to indicate if repeat is enabled
+ */
 bool repeat = false;
+
+/**
+ * @brief Current track being played
+ */
 uint16_t current_track = 1;
+
+/**
+ * @brief Next player command to be executed
+ */
 uint8_t next_player_command = STATUS;
+
+/**
+ * @brief Track ID prompt
+ */
 uint16_t track_id_prompt;
+
+/**
+ * @brief Track ID to play
+ */
 uint16_t track_id_to_play;
+
+/**
+ * @brief Current EQ preset
+ */
 uint8_t eq;
+
+/**
+ * @brief Shuffled playlist
+ */
 uint16_t shuffled_playlist[NUM_TRACKS+1];
+
+/**
+ * @brief Current playlist index
+ */
 uint16_t playlist_index = 1;
 
+/**
+ * @brief Keypad matrix
+ */
 KeypadMatrix keypad;
+
+/**
+ * @brief Keypad column pins
+ */
 const uint8_t cols[] = KEYPAD_COLS;
+
+/**
+ * @brief Keypad row pins
+ */
 const uint8_t rows[] = KEYPAD_ROWS;
 
+/**
+ * @brief DFPlayer instance
+ */
 dfplayer_t dfplayer;
 
+/**
+ * @brief Tone generator instance
+ */
 struct tonegenerator_t generator; // Used to drive the built-in piezo element
 
+/**
+ * @brief Power-on complete callback
+ * @return 0
+ */
 int64_t power_on_complete(){
     gpio_put(POWER_ON_LED_PIN, 0);
     return 0;
 }
 
+/**
+ * @brief Blink complete callback
+ * @return 0
+ */
 int64_t blink_complete(){
     gpio_put(LED_PIN, 0);
     return 0;
 }
 
+/**
+ * @brief Blink the LED for a specified duration
+ * @param ms Duration of the blink in milliseconds
+ */
 void blink(uint16_t ms){
     gpio_put(LED_PIN, 1);
     if (blink_alarm) cancel_alarm(blink_alarm);
     blink_alarm = add_alarm_in_ms(ms, blink_complete, NULL, true);
 }
 
+/**
+ * @brief Randomize the playlist
+ */
 void randomize_playlist(){
     uint16_t i = NUM_TRACKS;
     uint16_t r1, r2, temp;
@@ -85,6 +162,9 @@ void randomize_playlist(){
     }
 }
 
+/**
+ * @brief Toggle repeat mode
+ */
 void toggle_repeat(){
     repeat = !repeat;
     #if DEBUG
@@ -97,10 +177,16 @@ void toggle_repeat(){
     }
 }
 
+/**
+ * @brief Set a command as the next in line to be executed by the repeating timer
+ */
 void player_request(uint8_t command){
     next_player_command = command;
 }
 
+/**
+ * @brief Next EQ preset
+ */
 void next_eq_preset(){
     eq++;
     if(eq > 5){ eq = 0; }
@@ -110,6 +196,9 @@ void next_eq_preset(){
     #endif
 }
 
+/**
+ * @brief Toggle pause mode
+ */
 void toggle_pause(){
     if(is_paused){
         player_request(RESUME);
@@ -123,6 +212,9 @@ void toggle_pause(){
     #endif
 }
 
+/**
+ * @brief Play a random track
+ */
 void random_track(){
     static bool random_seeded;
     if(!random_seeded){
@@ -146,6 +238,9 @@ void random_track(){
 // We could call dfplayer_previous() and dfplayer_next(), but some chips
 // in DFPlayer clones have trouble picking the right track when files have
 // not been transferred to the microSD card sequentially.
+/**
+ * @brief Previous track
+ */
 void prev_track(){
     if(current_track > 1){
         current_track--;
@@ -158,6 +253,9 @@ void prev_track(){
     }
 }
 
+/**
+ * @brief Next track
+ */
 void next_track(){
     if(current_track < NUM_TRACKS){
         current_track++;
@@ -170,6 +268,9 @@ void next_track(){
     }
 }
 
+/**
+ * @brief Check player status
+ */
 void check_player_status(){
     static uint8_t last_player_status = 0;
     // dfplayer_get_status() is unreliable with some of the different chips found on
@@ -200,6 +301,10 @@ void check_player_status(){
     }
 }
 
+/**
+ * @brief Execute the next player command. Called by the repeating timer.
+ * @return True
+ */
 bool poll_player(){
     switch(next_player_command){
         case PLAY:
@@ -231,16 +336,28 @@ bool poll_player(){
     return true;
 }
 
+/**
+ * @brief Scheduled play callback
+ * @return 0
+ */
 int64_t scheduled_play(){
     player_request(PLAY);
     return 0;
 }
 
+/**
+ * @brief Input timeout callback
+ * @return 0
+ */
 int64_t input_timeout(){
     track_id_prompt = 0;
     return 0;
 }
 
+/**
+ * @brief Type track ID
+ * @param n Digit to type
+ */
 void type_track_id(uint8_t n){
     if(type_timeout_alarm){ cancel_alarm (type_timeout_alarm); }
     type_timeout_alarm = add_alarm_in_ms(INPUT_TIMEOUT_MS, input_timeout, NULL, true);
@@ -260,6 +377,10 @@ void type_track_id(uint8_t n){
     }
 }
 
+/**
+ * @brief Key long pressed callback
+ * @param key Key that was pressed
+ */
 void key_long_pressed(uint8_t key){
     switch(key){
         case 13: // key 0
@@ -270,6 +391,10 @@ void key_long_pressed(uint8_t key){
     tone(&generator, NOTE_C3, BEEP_DURATION_MS); // Feedback beep
 }
 
+/**
+ * @brief Key press available
+ * @return True if a key press is available
+ */
 bool keypress_available(){
     static uint64_t last_press;
     uint64_t now = time_us_64();
@@ -283,6 +408,10 @@ bool keypress_available(){
     return true;
 }
 
+/**
+ * @brief Key pressed callback
+ * @param key Key that was pressed
+ */
 void key_pressed(uint8_t key){
     #if DEBUG
     printf("key: %d\n", key);
@@ -372,6 +501,10 @@ void key_pressed(uint8_t key){
     }
 }
 
+/**
+ * @brief Button onchange callback
+ * @param button_p Button that changed
+ */
 void button_onchange(button_t *button_p){
     button_t *button = (button_t*)button_p;
     if(button->state) return;   // Ignore button release. Invert the logic if using
@@ -384,6 +517,9 @@ void button_onchange(button_t *button_p){
     blink(BLINK_DURATION_MS); // Feedback blink
 }
 
+/**
+ * @brief Binary info declaration for Picotool
+ */
 void bi_decl_all(){
     #if PICO_ON_DEVICE
     bi_decl(bi_program_name(PROGRAM_NAME));
@@ -408,11 +544,20 @@ void bi_decl_all(){
     #endif
 }
 
+/**
+ * @brief Low battery pulse callback
+ * @return True
+ */
 bool low_batt_pulse(){
     static bool flag;
     gpio_put(LED_PIN, flag = !flag);
+    return true;
 }
 
+/**
+ * @brief Battery low callback
+ * @param battery_mv Battery voltage in millivolts
+ */
 void battery_low_callback(uint16_t battery_mv){
     battery_check_stop();
     add_repeating_timer_ms(200, low_batt_pulse, NULL, &low_batt_pulse_timer);
@@ -470,3 +615,4 @@ int main(){
 
     return 0;
 }
+
